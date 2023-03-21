@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'style.css' %}">
+
+{% block content %}
+    <div class="input-group">
+        <form method="post">
+            {% csrf_token %}
+            {{ form.non_field_errors }}
+            <br>
+
+
+            <div class="input-group-prepend">
+                {{ form.song_title.errors }}
+                <span class="input-group-text" for="{{ form.song_title.id_for_label }}">Title:</span>
+                {{ form.song_title }}
+            </div>
+
+            <div class="input-group-prepend">
+                {{ form.song_url.errors }}
+                <span class="input-group-text" for="{{ form.song_url.id_for_label }}">URL:</span>
+                {{ form.song_url }}
+            </div>
+
+            <div class="input-group-prepend">
+                {{ form.description.errors }}
+                <span class="input-group-text" for="{{ form.description.id_for_label }}">Description:</span>
+                {{ form.description }}
+            </div>
+            <div>
+                <input type="submit" value="Submit" class="btn btn-primary">
+            </div>
+        </form>
+    </div>
+
+{% endblock %}

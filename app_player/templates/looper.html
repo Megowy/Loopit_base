@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+
+{% load static %}
+<link rel="stylesheet" href="{% static 'style.css' %}">
+
+
+{% block content %}
+    <div class="player" id="player"></div>
+
+    <script>
+        var tag = document.createElement('script');
+
+        tag.src = "https://www.youtube.com/iframe_api";
+        var firstScriptTag = document.getElementsByTagName('script')[0];
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+        start_part = {{ startpart }}
+            stop_part = {{ stoppart }}
+
+                function onYouTubeIframeAPIReady() {
+                    var player;
+                    player = new YT.Player('player', {
+                        height: '360',
+                        width: '640',
+                        playerVars: {'autoplay': 0, 'loop': 1},
+                        events: {
+                            'onReady': onPlayerReady,
+                            'onStateChange': onPlayerStateChange
+                        },
+                    });
+                }
+
+        function onPlayerReady(event) {
+            event.target.loadVideoById({
+                'videoId': '{{song_id}}',
+                'startSeconds': {{ startpart }},
+                'endSeconds': {{ stoppart }},
+                'suggestedQuality': 'small',
+            });
+        }
+
+        function onPlayerStateChange(event) {
+            if (event.data == YT.PlayerState.ENDED) {
+                event.target.loadVideoById({
+                    'videoId': '{{song_id}}',
+                    'startSeconds': {{ startpart }},
+                    'endSeconds': {{ stoppart }},
+                    'suggestedQuality': 'small',
+                });
+            }
+        }
+    </script>
+    <br><br>
+    <p>Start: {{ startpart }} - Stop: {{ stoppart }}</p>
+    <br><br>
+
+    <div class="input-group">
+        <div method="post">
+            {% csrf_token %}
+
+
+            {% for part in parts %}
+                {{ form.non_field_errors }}
+
+                <div class="input-group-prepend">
+                    {{ form.startpart.errors }}
+                    <div class="start">
+{#                        <script>#}
+                            <div>
+                                <input name="startvalue" type="number" id="start_value" value={{ part.start_p }}>
+                                <label for="start_value"> START:</label>
+
+                                {#function get_value()#}
+                                {#var x = document.getElementsByName("startvalue").valueAsNumber;#}
+                                {#document.getElementById("y").innerHTML = x;#}
+                                {##}
+                                {##}
+                                {#<p id="y"></p>#}
+
+
+                            </div>
+{#                        </script>#}
+                    </div>
+
+                    <div class="stop">
+                        <div oninput="value=parseInt(stoppart)">STOP
+                            <input type="number" id="stop_value" value={{ part.stop_p }} min={{ part.start_p }}>
+                        </div>
+                    </div>
+
+
+                    <div class="s_button">
+                        <a class="btn btn-primary btn-sm"
+                           href="{% url 'loop_it' song_url=song_id  start_p=part.start_p stop_p=part.stop_p %}"
+                           role="button">Update
+                        </a>
+                    </div>
+                    <br><br>
+
+                </div>
+            {% endfor %}
+
+        </div>
+    </div>
+
+
+{% endblock %}
+
+{# <div>#}
+{#        <div class="input">#}
+{#            <form  oninput="x.value=parseInt(start.value)">START:#}
+{#                <input type="number" id="start"  value={{ startpart }}>#}
+{#                                                                                  <output name="x" for="start"></output>#}
+{#            </form>#}
+{#            <form oninput="y.value=parseInt(stop.value)">STOP &nbsp:#}
+{#                <input type="number" id="stop"  value={{ stoppart }} min={{ startpart }}>#}
+{#                                                                                                <output name="y" for="stop"></output>#}
+{#            </form>#}
+{#        </div>#}
+{#        <div class="submit_button">#}
+{#            <input type="submit" value="Update" class="btn btn-primary">#}
+{#            <form method="post">#}
+{#                {% csrf_token %}#}
+{#                <output name="x" for="start"></output>#}
+{#                <input type="submit" value="Update">#}
+{#            </form>#}
+{#        </div>#}
+{#    </div>#}
+{##}
+{##}
+
