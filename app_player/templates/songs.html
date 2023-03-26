@@ -13,7 +13,7 @@
                     <li>
                         <div class="input">
                             <div class="s_list">
-                                <a href="{% url 'looper' s_id=song.id %}">
+                                <a href="{% url 'looper' pk=song.id %}">
                                     {{ song.band }} - {{ song.song_title }} - ({{ song.description }})
                                 </a>
                             </div>

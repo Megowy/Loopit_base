@@ -30,6 +30,7 @@ class SongUpdateView(UpdateView):
     model = Song
     form_class = SongForm
 
+
 class LooperUpdateView(UpdateView):
     template_name = 'looper_update.html'
     model = Part
@@ -37,16 +38,16 @@ class LooperUpdateView(UpdateView):
 
 
 
-def looper(request, s_id):
-    urlval = Song.objects.get(id=s_id).song_url
-    parts = Part.objects.filter(song_id=s_id).values('start_p', 'stop_p')
+def looper(request, pk):
+    urlval = Song.objects.get(id=pk).song_url
+    parts = Part.objects.filter(song_id=pk).values('start_p', 'stop_p')
     try:
         startpart = parts[0]['start_p']
         stoppart = parts[0]['stop_p']
     except:
         startpart = 0
-        stoppart = 100
-    context = {'song_id': urlval, 'startpart': startpart, 'stoppart': stoppart, 'parts': parts}
+        stoppart = 0
+    context = {'song_url': urlval, 'startpart': startpart, 'stoppart': stoppart, 'parts': parts}
     return render(
         request, template_name='looper.html', context=context)
 
@@ -56,6 +57,6 @@ def looper_with_param(request, song_url, start_p, stop_p):
     # part_id = Part.objects.get(song_id=song_id).id
 
     parts = Part.objects.filter(song_id=song_id).values('start_p', 'stop_p')
-    context = {'song_id': song_url, 'startpart': start_p, 'stoppart': stop_p, 'parts': parts}
+    context = {'song_url': song_url, 'startpart': start_p, 'stoppart': stop_p, 'parts': parts}
     return render(
         request, template_name='looper.html', context=context)
