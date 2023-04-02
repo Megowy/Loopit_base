@@ -1,34 +1,54 @@
 from logging import getLogger
+
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render
-# from django.http import HttpResponse
+from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
-from django.views.generic import ListView, UpdateView, CreateView
+from django.views.generic import ListView, UpdateView, CreateView, DeleteView
 from app_player.models import Song, Part
 from app_player.forms import SongForm, PartForm
 from django.views.generic.detail import SingleObjectMixin
 
 LOGGER = getLogger()
 
+def index(request):
+    return render(request, template_name='index.html')
 
 class PlayerView(ListView):
     template_name = 'songs.html'
     model = Song
+    def get_queryset(self):
+        return Song.objects.filter(user=self.request.user)
 
 
 class SongCreateView(CreateView):
+    model = Song
     template_name = 'form.html'
     form_class = SongForm
-    success_url = reverse_lazy('add_song')
+    success_url = reverse_lazy('songs_list')
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return  super().form_valid(form)
 
     def form_invalid(self, form):
         LOGGER.warning('User provided invalid data.')
         return super().form_invalid(form)
+
+    # def get_queryset(self):
+    #     return Song.objects.filter(user=self.request.user)
 
 
 class SongUpdateView(UpdateView):
     template_name = 'form.html'
     model = Song
     form_class = SongForm
+    success_url = reverse_lazy('songs_list')
+
+class SongDeleteView(DeleteView):
+    template_name = 'delete_song_confirmation.html'
+    model = Song
+    success_url = reverse_lazy('songs_list')
 
 
 class LooperUpdateView(UpdateView):
