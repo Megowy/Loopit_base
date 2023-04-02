@@ -1,0 +1,140 @@
+{% extends "base.html" %}
+
+{% load static %}
+<link rel="stylesheet" href="{% static 'style.css' %}">
+
+
+{% block content %}
+    <div class="player" id="player"></div>
+
+    <script>
+        tag = document.createElement('script');
+
+        start_temp = {{ startpart }}
+        stop_temp = {{ stoppart }}
+
+                tag.src = "https://www.youtube.com/iframe_api";
+        firstScriptTag = document.getElementsByTagName('script')[0];
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+        function onYouTubeIframeAPIReady() {
+            player = new YT.Player('player', {
+                height: '360',
+                width: '640',
+                playerVars: {'autoplay': 0, 'loop': 1},
+                events: {
+                    'onReady': onPlayerReady,
+                    'onStateChange': onPlayerStateChange
+                },
+            });
+        }
+
+        function onPlayerReady(event) {
+            event.target.loadVideoById({
+                'videoId': '{{song_url}}',
+                'startSeconds': start_temp,
+                'endSeconds': stop_temp,
+                'suggestedQuality': 'small',
+            });
+        }
+
+        function onPlayerStateChange(event) {
+            if (event.data == YT.PlayerState.ENDED) {
+                event.target.loadVideoById({
+                    'videoId': '{{song_url}}',
+                    'startSeconds': start_temp,
+                    'endSeconds': stop_temp,
+                    'suggestedQuality': 'small',
+                });
+            }
+        }
+
+
+
+    </script>
+
+    <br><br>
+
+    <p>Start: {{ startpart }} - Stop: {{ stoppart }} </p>
+    <br><br>
+
+
+    {% for part in parts %}
+
+        <div class="input-group-prepend">
+
+            <form method="post">
+                {% csrf_token %}
+                {{ form.startpart.errors }}
+                <div class="start">
+                    <label for="start_value"> START:</label>
+                    <input name="startvalue" type="number" id="start_value" value={{ part.start_p }} )>
+                </div>
+
+                <div class="stop">
+                    <label for="stop_value"> STOP:</label>
+                    <input name="stopvalue" type="number" id="stop_value"
+                           value={{ part.stop_p }} min={{ part.start_p }}  >
+                </div>
+
+
+                <script>
+                    function getValue() {
+                        var x = document.getElementById("start_value");
+                        start_temp = x.value;
+
+                        var y = document.getElementById("stop_value");
+                        {#var defaultVal = x.defaultValue;#}
+                        stop_temp = y.value;
+
+                        document.getElementById("start_value").innerHTML =  start_temp;
+                    }
+                </script>
+
+
+                <div>
+                    <input type="button" value="Submit" onclick="getValue()" class="btn btn-primary btn-sm">
+                </div>
+
+                <div class="s_button">
+                    <a class="btn btn-primary btn-sm"
+
+                       href="{% url 'loop_it' song_url=song_url  start_p=part.start_p  stop_p=part.stop_p %}"
+                       role="button">Update
+                    </a>
+                </div>
+                <br><br>
+            </form>
+
+        </div>
+    {% endfor %}
+
+
+
+
+
+{% endblock %}
+
+{# <div>#}
+{#        <div class="input">#}
+{#            <form  oninput="x.value=parseInt(start.value)">START:#}
+{#                <input type="number" id="start"  value={{ startpart }}>#}
+{#                                                                                  <output name="x" for="start"></output>#}
+{#            </form>#}
+{#            <form oninput="y.value=parseInt(stop.value)">STOP &nbsp:#}
+{#                <input type="number" id="stop"  value={{ stoppart }} min={{ startpart }}>#}
+{#                                                                                                <output name="y" for="stop"></output>#}
+{#            </form>#}
+{#        </div>#}
+{#        <div class="submit_button">#}
+{#            <input type="submit" value="Update" class="btn btn-primary">#}
+{#            <form method="post">#}
+{#                {% csrf_token %}#}
+{#                <output name="x" for="start"></output>#}
+{#                <input type="submit" value="Update">#}
+{#            </form>#}
+{#        </div>#}
+{#    </div>#}
+{##}
+{##}
+
