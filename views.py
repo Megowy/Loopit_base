@@ -1,14 +1,12 @@
 from logging import getLogger
-from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render
-from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
 from django.views.generic import ListView, UpdateView, CreateView, DeleteView
 
 from app_player.models import Song, Part
 from app_player.forms import SongForm, PartForm
 from app_player.additon import get_length
-from django.views.generic.detail import SingleObjectMixin
+
 
 LOGGER = getLogger()
 
@@ -71,6 +69,7 @@ def looper(request, pk):
     except:
         startpart = 0
         stoppart = length_sec
+
     context = {'song_url': urlval, 'startpart': startpart, 'stoppart': stoppart, 'parts': parts, 'lenght_sec': length_sec}
     return render(
         request, template_name='looper.html', context=context)

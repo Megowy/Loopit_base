@@ -109,6 +109,53 @@
         </div>
     {% endfor %}
 
+    <div class="input-group-prepend">
+
+            <form method="post">
+                {% csrf_token %}
+                {{ form.startpart.errors }}
+                <div class="start">
+                    <label for="start_value"> START:</label>
+                    <input name="startvalue" type="number" id="start_value" value={{ startpart }} )>
+                </div>
+
+                <div class="stop">
+                    <label for="stop_value"> STOP:</label>
+                    <input name="stopvalue" type="number" id="stop_value"
+                           value={{ stoppart }} min={{ startpart }}  >
+                </div>
+
+
+                <script>
+                    function getValue() {
+                        var x = document.getElementById("start_value");
+                        start_temp = x.value;
+
+                        var y = document.getElementById("stop_value");
+                        {#var defaultVal = x.defaultValue;#}
+                        stop_temp = y.value;
+
+                        document.getElementById("start_value").innerHTML =  start_temp;
+                    }
+                </script>
+
+
+                <div>
+                    <input type="button" value="Submit" onclick="getValue()" class="btn btn-primary btn-sm">
+                </div>
+
+                <div class="s_button">
+                    <a class="btn btn-primary btn-sm"
+
+                       href="{% url 'loop_it' song_url=song_url  start_p=startpart  stop_p=stoppart %}"
+                       role="button">Update
+                    </a>
+                </div>
+                <br><br>
+            </form>
+
+        </div>
+
 
 
 
