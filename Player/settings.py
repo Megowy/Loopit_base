@@ -35,6 +35,8 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     'app_player',
     'accounts',
+    'contact',
+    'search_youtube',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -132,3 +134,5 @@ AUTH_USER_MODEL = 'accounts.CustomUser'
 LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = 'songs_list'
 LOGOUT_REDIRECT_URL = 'index '
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
