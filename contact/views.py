@@ -21,4 +21,4 @@ def contact_form(request):
     return render(request, 'contact.html', {'form': form})
 
 def success(request):
-   return HttpResponse('Success!')
+   return render(request, 'success.html')
