@@ -1,5 +1,6 @@
-from django.forms import CharField, IntegerField, ModelForm
+from django.forms import CharField, IntegerField, ModelForm, Form
 from app_player.models import Song, Part
+
 from django import forms
 
 
@@ -27,3 +28,14 @@ class PartForm(ModelForm):
     class Meta:
         model = Part
         fields = '__all__'
+
+
+
+class LooperBasic(Form):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    video_url = CharField(max_length=11)
+    title = CharField(max_length=100)
+    description = CharField(max_length=200)
+

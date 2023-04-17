@@ -3,15 +3,14 @@
 {% load static %}
 <link rel="stylesheet" href="{% static 'style.css' %}">
 
-
 {% block content %}
-    <div class="player" id="player"></div>
 
+
+
+    <br><br>
+    <div class="player" id="player"></div>
     <script>
         tag = document.createElement('script');
-
-        start_temp = {{ start_video }}
-        stop_temp = {{ stop_video }}
 
         tag.src = "https://www.youtube.com/iframe_api";
         firstScriptTag = document.getElementsByTagName('script')[0];
@@ -31,7 +30,7 @@
 
         function onPlayerReady(event) {
             event.target.loadVideoById({
-                'videoId': '{{song_url}}',
+                'videoId': '{{ video_url }}',
                 'startSeconds': '{{ start_video }}',
                 'endSeconds': '{{ stop_video }}',
                 'suggestedQuality': 'small',
@@ -41,7 +40,7 @@
         function onPlayerStateChange(event) {
             if (event.data == YT.PlayerState.ENDED) {
                 event.target.loadVideoById({
-                    'videoId': '{{song_url}}',
+                    'videoId': '{{video_url}}',
                     'startSeconds': '{{ start_video }}',
                     'endSeconds': '{{ stop_video }}',
                     'suggestedQuality': 'small',
@@ -50,42 +49,17 @@
         }
 
 
-
     </script>
+    <form action="" method="POST">
+    {% csrf_token %}
+            <br><br>
+            <label for="start_value"> START:</label>
+            <input id="start_value" type="number" name="start_value" value={{ start_video }} min=0 max={{ stop_video }} >
+            <label for="stop_value"> STOP:</label>
+            <input id="stop_value" type="number" name="stop_value"   value={{ stop_video }} min={{ start_video }} max={{ length }}  >
+            <input type="submit" value="Change">
 
-    <br><br>
-{#    <p> URL {{ song_url }} </p>#}
-    <p>Start: {{ start_video }} - Stop: {{ stop_video }} </p>
-    <br><br>
-
-    {% for part in parts %}
-
-        <form action="" method="POST">
-            {% csrf_token %}
-                <br><br>
-                <label for="start_value"> START:</label>
-                <input id="start_value" type="number" name="start_value" value={{ part.start_p }} min=0 max={{ part.stop_p }} >
-                <label for="stop_value"> STOP:</label>
-                <input id="stop_value" type="number" name="stop_value"   value={{ part.stop_p}} min={{ part.start_p }} max={{ length }}  >
-                <input id="id_value" type="hidden" name="id_value" value={{ part.id }} >
-                <input type="submit" value="Change">
-                <div class="s_button">
-                    <a href="{% url 'delete_loop' id=part.id %}" role="button"> Delete
-                    </a>
-                </div>
-
-        </form>
-
-    {% endfor %}
-
-
-    <div class="s_button">
-        <a href="{% url 'add_loop' song_url=song_url %}" role="button"> Add new loop
-        </a>
-    </div>
-
-
-
-
-
+    </form>
 {% endblock %}
+
+
