@@ -9,8 +9,9 @@
     <div class="jumbotron">
         <ul>
             {% for song in object_list %}
-                <section>
-                    <li>
+                {% if temp1 == temp2 %}
+                    <section>
+
                         <div class="input">
                             <div class="s_list">
                                 <a href="{% url 'looper' pk=song.id %}">
@@ -22,9 +23,15 @@
                                    role="button">Update
                                 </a>
                             </div>
+                             <div class="s_button">
+                                <a class="btn btn-primary btn-sm" href="{% url 'delete_song' pk=song.id %}"
+                                   role="button">Delete
+                                </a>
+                            </div>
                         </div>
-                    </li>
-                </section>
+
+                    </section>
+                {% endif %}
             {% endfor %}
         </ul>
     </div>
